@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    has_many :microposts, dependent: :destroy
     attr_accessor :remember_token
     has_secure_password
     validates :password, presence: true, length: { minimum: 6 }
@@ -14,6 +15,13 @@ class User < ApplicationRecord
             BCrypt::Engine.cost
         BCrypt::Password.create(string, cost: cost)
     end
+
+    # 試作feedの定義
+    # 完全な実装は次章の「ユーザーをフォローする」を参照
+    def feed
+        Micropost.where("user_id = ?", id)
+    end
+
 
     # 永続セッションのためにユーザーをデータベースに記憶する
     def remember
